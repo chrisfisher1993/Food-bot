@@ -1,0 +1,42 @@
+import anthropic
+
+# Initialize Anthropics client with your API key
+client = anthropic.Anthropic(api_key="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")
+
+# Use a while loop to allow the user to enter prompts multiple times
+while True:
+    # Prompt the user for input
+    user_prompt = input("Hi, I'm a food API Agent. Please ask me how I can assist you (or type 'exit' to quit): ")
+
+    # Check if the user wants to exit
+    if user_prompt.lower() == 'exit':
+        print("Exiting the food API Agent.")
+        break
+
+    # Check if the user prompt contains keywords related to food, cuisine, eating, being hungry, or restaurants
+    if any(keyword in user_prompt.lower() for keyword in ["food", "cuisine", "eat", "restaurant", "cook", "recipe"]):
+        # Create a message using user input as the prompt
+        message = client.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=100,
+            temperature=0,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": user_prompt + "\n"
+                        }
+                    ]
+                }
+            ]
+        )
+
+        # Extract the text content of the message
+        text_content = message.content[0].text
+
+        # Print the generated text content of the message
+        print(text_content)
+    else:
+        print("Unfortunately, I can only respond with questions related to restaurants.")
